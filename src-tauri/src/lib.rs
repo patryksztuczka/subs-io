@@ -7,6 +7,23 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+#[tauri::command]
+fn hello() {
+    println!("Executin python script...");
+    let output = Command::new("python3")
+        .arg("./python-scripts/hello.py")
+        .output()
+        .expect("Failed to execute hello.py script");
+
+    let result = String::from_utf8_lossy(&output.stdout);
+
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+    println!("stdout: {}", stdout);
+    println!("stderr: {}", stderr);
+}
+
 #[tauri::command(rename_all = "snake_case")]
 fn extract_audio(file_path: &str) {
     println!("File path: {}", file_path);
@@ -38,7 +55,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![greet, extract_audio])
+        .invoke_handler(tauri::generate_handler![greet, hello, extract_audio])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

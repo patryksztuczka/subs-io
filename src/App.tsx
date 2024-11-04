@@ -12,6 +12,10 @@ function App() {
     setGreetMsg(await invoke("greet", { name }));
   }
 
+  async function hello() {
+    setGreetMsg(await invoke("hello"));
+  }
+
   async function warn() {
     const filePath = await open({
       multiple: false,
@@ -38,6 +42,9 @@ function App() {
           placeholder="Enter a name..."
         />
         <button type="submit">Greet</button>
+        <button type="button" onClick={hello}>
+          Hello
+        </button>
       </form>
       <p>{greetMsg}</p>
       <button type="button" onClick={warn}>
